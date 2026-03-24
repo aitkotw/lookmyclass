@@ -1,0 +1,1929 @@
+{
+  "info": {
+    "name": "LookMyClass API",
+    "version": "1.0.0",
+    "description": "LookMyClass is an EdTech SaaS platform for creating and managing academic curricula, AI-powered tests, documents, and subscriptions.",
+    "baseUrl": "https://api.lookmyclass.com"
+  },
+  "groups": [
+    {
+      "id": "auth",
+      "name": "Auth",
+      "color": "#6366f1",
+      "endpoints": [
+        {
+          "id": "forget-password",
+          "name": "Forget Password",
+          "method": "POST",
+          "path": "/auth/password/forget",
+          "subgroup": "Reset Password",
+          "auth": false,
+          "description": "Initiates the password reset flow by sending an OTP to the user's email.",
+          "requestBody": {
+            "type": "json",
+            "example": { "email": "user@example.com" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "OTP sent successfully",
+              "example": { "success": true, "statusCode": 201, "message": "An OTP has been sent to your email", "data": { "success": true, "message": "An OTP has been sent to your email" } }
+            },
+            {
+              "status": 400,
+              "description": "User not found",
+              "example": { "success": false, "statusCode": 400, "message": "User with this email was not found", "error": { "code": 100105, "errors": [] } }
+            }
+          ]
+        },
+        {
+          "id": "verify-password",
+          "name": "Verify Password OTP",
+          "method": "POST",
+          "path": "/auth/password/verify",
+          "subgroup": "Reset Password",
+          "auth": false,
+          "description": "Verifies the OTP sent to the user's email for password reset.",
+          "requestBody": {
+            "type": "json",
+            "example": { "email": "user@example.com", "otp": "343558" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "OTP verified successfully",
+              "example": { "success": true, "statusCode": 201, "message": "OTP verified successfully", "data": { "success": true, "message": "OTP verified successfully" } }
+            },
+            {
+              "status": 400,
+              "description": "Invalid OTP",
+              "example": { "success": false, "statusCode": 400, "message": "Invalid OTP provided", "error": { "code": 100004, "errors": [] } }
+            }
+          ]
+        },
+        {
+          "id": "reset-password",
+          "name": "Reset Password",
+          "method": "POST",
+          "path": "/auth/password/reset",
+          "subgroup": "Reset Password",
+          "auth": false,
+          "description": "Resets the user's password using a verified OTP.",
+          "requestBody": {
+            "type": "json",
+            "example": { "email": "user@example.com", "otp": "343558", "newPassword": "NewPass@123$" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Password changed successfully",
+              "example": { "success": true, "statusCode": 201, "message": "Password changed successfully", "data": { "success": true, "message": "Password changed successfully" } }
+            },
+            {
+              "status": 400,
+              "description": "OTP expired",
+              "example": { "success": false, "statusCode": 400, "message": "OTP has expired, please request a new one", "error": { "code": 100008, "errors": [] } }
+            }
+          ]
+        },
+        {
+          "id": "get-2fa-status",
+          "name": "Get 2FA Status",
+          "method": "GET",
+          "path": "/auth/2fa/status",
+          "subgroup": "2FA",
+          "auth": true,
+          "description": "Returns the current 2FA status for the authenticated user.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "2FA status returned",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "is2FAEnabled": false } }
+            },
+            {
+              "status": 400,
+              "description": "Unauthorized",
+              "example": { "success": false, "statusCode": 400, "message": "Unauthorized! Please make sure you have a valid token", "error": { "code": 100001, "errors": [] } }
+            }
+          ]
+        },
+        {
+          "id": "enable-2fa",
+          "name": "Enable 2FA",
+          "method": "POST",
+          "path": "/auth/2fa/enable",
+          "subgroup": "2FA",
+          "auth": true,
+          "description": "Initiates the 2FA enable flow by sending a verification code to the user's email.",
+          "requestBody": {
+            "type": "json",
+            "example": { "password": "YourPassword@123" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Verification code sent",
+              "example": { "success": true, "statusCode": 201, "message": "Verification code sent to your email to enable 2FA", "data": { "success": true, "message": "Verification code sent to your email to enable 2FA" } }
+            }
+          ]
+        },
+        {
+          "id": "verify-setup-2fa",
+          "name": "Verify Setup 2FA",
+          "method": "POST",
+          "path": "/auth/2fa/verify-setup",
+          "subgroup": "2FA",
+          "auth": true,
+          "description": "Completes 2FA setup by verifying the OTP sent during enable flow.",
+          "requestBody": {
+            "type": "json",
+            "example": { "otp": "288653" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "2FA enabled successfully",
+              "example": { "success": true, "statusCode": 201, "message": "Two-factor authentication enabled successfully", "data": { "success": true, "message": "Two-factor authentication enabled successfully" } }
+            }
+          ]
+        },
+        {
+          "id": "disable-otp-request",
+          "name": "Request OTP to Disable 2FA",
+          "method": "POST",
+          "path": "/auth/2fa/disable/request-otp",
+          "subgroup": "2FA",
+          "auth": true,
+          "description": "Sends an OTP to the user's email to initiate the 2FA disable flow.",
+          "responses": [
+            {
+              "status": 201,
+              "description": "OTP sent",
+              "example": { "success": true, "statusCode": 201, "message": "Verification code sent to disable 2FA", "data": { "success": true, "message": "Verification code sent to disable 2FA" } }
+            }
+          ]
+        },
+        {
+          "id": "disable-2fa",
+          "name": "Disable 2FA",
+          "method": "POST",
+          "path": "/auth/2fa/disable",
+          "subgroup": "2FA",
+          "auth": true,
+          "description": "Disables 2FA for the authenticated user using OTP and password.",
+          "requestBody": {
+            "type": "json",
+            "example": { "otp": "860114", "password": "YourPassword@123" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "2FA disabled",
+              "example": { "success": true, "statusCode": 201, "message": "Two-factor authentication disabled successfully", "data": { "success": true, "message": "Two-factor authentication disabled successfully" } }
+            }
+          ]
+        },
+        {
+          "id": "verify-login-2fa",
+          "name": "Verify Login 2FA",
+          "method": "POST",
+          "path": "/auth/2fa/verify-login",
+          "subgroup": "2FA",
+          "auth": false,
+          "description": "Completes login when 2FA is enabled by verifying the OTP along with a temporary token.",
+          "requestBody": {
+            "type": "json",
+            "example": { "email": "user@example.com", "otp": "530543", "tempToken": "<temp_token_from_login>" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Login successful",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "access_token": "<jwt_token>", "refresh_token": "<jwt_token>", "id": "<user_id>" } }
+            }
+          ]
+        },
+        {
+          "id": "resend-login-otp",
+          "name": "Resend Login OTP",
+          "method": "POST",
+          "path": "/auth/2fa/resend-otp",
+          "subgroup": "2FA",
+          "auth": false,
+          "description": "Resends the 2FA login OTP using the temporary token issued at login.",
+          "requestBody": {
+            "type": "json",
+            "example": { "email": "user@example.com", "tempToken": "<temp_token_from_login>" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "OTP resent",
+              "example": { "success": true, "statusCode": 201, "message": "Verification code resent", "data": { "success": true, "message": "Verification code resent", "expiresIn": 180 } }
+            }
+          ]
+        },
+        {
+          "id": "login",
+          "name": "Login",
+          "method": "POST",
+          "path": "/auth/login",
+          "subgroup": null,
+          "auth": false,
+          "description": "Authenticates a user and returns access and refresh tokens. If 2FA is enabled, returns a temporary token instead.",
+          "requestBody": {
+            "type": "json",
+            "example": { "email": "user@example.com", "password": "YourPassword@123" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Login successful",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "access_token": "<jwt_token>", "refresh_token": "<jwt_token>", "id": "<user_id>" } }
+            },
+            {
+              "status": 400,
+              "description": "Invalid credentials",
+              "example": { "success": false, "statusCode": 400, "message": "Invalid credentials provided", "error": { "code": 100002, "errors": [] } }
+            },
+            {
+              "status": 400,
+              "description": "Validation failed",
+              "example": { "success": false, "statusCode": 400, "message": "Validation failed", "error": { "code": -2, "errors": [ { "field": "email", "messages": ["email must be an email"] } ] } }
+            }
+          ]
+        },
+        {
+          "id": "register",
+          "name": "Register",
+          "method": "POST",
+          "path": "/auth/register",
+          "subgroup": null,
+          "auth": false,
+          "description": "Registers a new user under an existing organization. Sends an email verification link.",
+          "requestBody": {
+            "type": "json",
+            "example": { "email": "user@example.com", "password": "YourPassword@123", "firstName": "John", "lastName": "Doe", "countryCode": "91", "phone": "9876543210", "organizationId": "<org_id>" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "User registered",
+              "example": { "success": true, "statusCode": 201, "message": "User added!! Please check your email for further details", "data": { "success": true, "message": "User added!! Please check your email for further details" } }
+            }
+          ]
+        },
+        {
+          "id": "register-admin",
+          "name": "Register Admin",
+          "method": "POST",
+          "path": "/auth/register-admin",
+          "subgroup": null,
+          "auth": false,
+          "description": "Registers a new admin user and creates a new organization simultaneously.",
+          "requestBody": {
+            "type": "json",
+            "example": { "email": "admin@example.com", "password": "AdminPass@123", "firstName": "John", "lastName": "Doe", "countryCode": "91", "phone": "9876543210", "orgName": "MyOrg", "orgSlug": "myorg" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Admin registered",
+              "example": { "success": true, "statusCode": 201, "message": "Admin registered!! Please check your email for further details", "data": { "success": true, "message": "Admin registered!! Please check your email for further details" } }
+            }
+          ]
+        },
+        {
+          "id": "register-verify",
+          "name": "Verify Registration",
+          "method": "POST",
+          "path": "/auth/register/verify",
+          "subgroup": null,
+          "auth": false,
+          "description": "Verifies the user's email using the token from the verification email.",
+          "requestBody": {
+            "type": "json",
+            "example": { "email": "user@example.com", "tokenHash": "<verification_token_from_email>" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "User verified",
+              "example": { "success": true, "statusCode": 201, "message": "User created successfully", "data": { "success": true, "message": "User created successfully" } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "organization",
+      "name": "Organization",
+      "color": "#10b981",
+      "endpoints": [
+        {
+          "id": "get-my-org",
+          "name": "Get My Organization",
+          "method": "GET",
+          "path": "/organizations/my-org",
+          "subgroup": "Admin",
+          "auth": true,
+          "description": "Returns the organization details for the currently authenticated admin.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "Organization details",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<org_id>", "name": "MyOrg", "slug": "myorg", "description": null, "createdAt": "2026-02-20T16:35:41.602Z", "updatedAt": "2026-02-20T16:35:41.602Z" } }
+            }
+          ]
+        },
+        {
+          "id": "update-my-org",
+          "name": "Update My Organization",
+          "method": "PATCH",
+          "path": "/organizations/my-org",
+          "subgroup": "Admin",
+          "auth": true,
+          "description": "Updates the details of the currently authenticated admin's organization.",
+          "requestBody": {
+            "type": "json",
+            "example": { "name": "New Org Name", "description": "Updated description" }
+          },
+          "responses": [
+            {
+              "status": 200,
+              "description": "Organization updated",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<org_id>", "name": "New Org Name", "slug": "myorg", "description": null, "createdAt": "2026-02-20T16:35:41.602Z", "updatedAt": "2026-02-20T18:22:38.717Z" } }
+            }
+          ]
+        },
+        {
+          "id": "my-org-users",
+          "name": "Get My Org Users",
+          "method": "GET",
+          "path": "/organizations/my-org/users",
+          "subgroup": "Admin",
+          "auth": true,
+          "description": "Returns all active users in the admin's organization.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of users",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": [ { "id": "<user_id>", "firstName": "John", "lastName": "Doe", "email": "user@example.com", "orgStatus": "active", "createdAt": "2026-02-20T16:37:27.263Z" } ] }
+            }
+          ]
+        },
+        {
+          "id": "my-org-pending-users",
+          "name": "Get My Org Pending Users",
+          "method": "GET",
+          "path": "/organizations/my-org/pending-users",
+          "subgroup": "Admin",
+          "auth": true,
+          "description": "Returns all users with pending approval status in the admin's organization.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of pending users",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": [] }
+            }
+          ]
+        },
+        {
+          "id": "approve-my-pending-user",
+          "name": "Approve Pending User",
+          "method": "PATCH",
+          "path": "/organizations/my-org/users/{userId}/approve",
+          "subgroup": "Admin",
+          "auth": true,
+          "description": "Approves a pending user in the admin's organization.",
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "The user ID to approve", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "User approved",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<user_id>", "firstName": "John", "lastName": "Doe", "email": "user@example.com", "orgStatus": "active", "createdAt": "2026-02-20T16:37:27.263Z" } }
+            }
+          ]
+        },
+        {
+          "id": "reject-my-pending-user",
+          "name": "Reject Pending User",
+          "method": "PATCH",
+          "path": "/organizations/my-org/users/{userId}/reject",
+          "subgroup": "Admin",
+          "auth": true,
+          "description": "Rejects a pending user in the admin's organization.",
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "The user ID to reject", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "User rejected",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "success": true } }
+            }
+          ]
+        },
+        {
+          "id": "remove-user-from-my-org",
+          "name": "Remove User from My Org",
+          "method": "DELETE",
+          "path": "/organizations/my-org/users/{userId}",
+          "subgroup": "Admin",
+          "auth": true,
+          "description": "Removes a user from the admin's organization.",
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "The user ID to remove", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "User removed",
+              "example": { "success": true, "statusCode": 200, "message": "Resource deleted", "data": { "success": true } }
+            }
+          ]
+        },
+        {
+          "id": "sa-get-organizations",
+          "name": "Get All Organizations",
+          "method": "GET",
+          "path": "/organizations",
+          "subgroup": "SuperAdmin",
+          "auth": true,
+          "description": "Returns a paginated list of all organizations. SuperAdmin only.",
+          "queryParams": [
+            { "name": "page", "type": "number", "description": "Page number", "required": false },
+            { "name": "limit", "type": "number", "description": "Items per page", "required": false }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of organizations",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "data": [ { "id": "<org_id>", "name": "Akdron", "slug": "akdron", "description": "...", "createdAt": "...", "userCount": 1 } ], "meta": { "page": 1, "limit": 10, "total": 1, "totalPages": 1 } } }
+            }
+          ]
+        },
+        {
+          "id": "sa-get-org-by-id",
+          "name": "Get Organization by ID",
+          "method": "GET",
+          "path": "/organizations/{orgId}",
+          "subgroup": "SuperAdmin",
+          "auth": true,
+          "description": "Returns details of a specific organization by ID. SuperAdmin only.",
+          "pathParams": [
+            { "name": "orgId", "type": "uuid", "description": "Organization ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Organization details",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<org_id>", "name": "Akdron", "slug": "akdron", "description": "...", "createdAt": "...", "updatedAt": "..." } }
+            }
+          ]
+        },
+        {
+          "id": "sa-update-org",
+          "name": "Update Organization",
+          "method": "PATCH",
+          "path": "/organizations/{orgId}",
+          "subgroup": "SuperAdmin",
+          "auth": true,
+          "description": "Updates an organization's details. SuperAdmin only.",
+          "pathParams": [
+            { "name": "orgId", "type": "uuid", "description": "Organization ID", "required": true }
+          ],
+          "requestBody": {
+            "type": "json",
+            "example": { "name": "New Name", "description": "New description" }
+          },
+          "responses": [
+            {
+              "status": 200,
+              "description": "Organization updated",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<org_id>", "name": "New Name", "slug": "akdron", "description": "New description", "createdAt": "...", "updatedAt": "..." } }
+            }
+          ]
+        },
+        {
+          "id": "sa-delete-org",
+          "name": "Delete Organization",
+          "method": "DELETE",
+          "path": "/organizations/{orgId}",
+          "subgroup": "SuperAdmin",
+          "auth": true,
+          "description": "Deletes an organization permanently. SuperAdmin only.",
+          "pathParams": [
+            { "name": "orgId", "type": "uuid", "description": "Organization ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Organization deleted",
+              "example": { "success": true, "statusCode": 200, "message": "Resource deleted", "data": { "success": true } }
+            }
+          ]
+        },
+        {
+          "id": "sa-org-users",
+          "name": "Get Org Users",
+          "method": "GET",
+          "path": "/organizations/{orgId}/users",
+          "subgroup": "SuperAdmin",
+          "auth": true,
+          "description": "Returns all users of a specific organization. SuperAdmin only.",
+          "pathParams": [
+            { "name": "orgId", "type": "uuid", "description": "Organization ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of users",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": [ { "id": "<user_id>", "firstName": "John", "lastName": "Doe", "email": "admin@example.com", "orgStatus": "active", "createdAt": "..." } ] }
+            }
+          ]
+        },
+        {
+          "id": "sa-org-pending-users",
+          "name": "Get Org Pending Users",
+          "method": "GET",
+          "path": "/organizations/{orgId}/pending-users",
+          "subgroup": "SuperAdmin",
+          "auth": true,
+          "description": "Returns all pending users of a specific organization. SuperAdmin only.",
+          "pathParams": [
+            { "name": "orgId", "type": "uuid", "description": "Organization ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of pending users",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": [] }
+            }
+          ]
+        },
+        {
+          "id": "sa-approve-pending-user",
+          "name": "Approve Pending User (SA)",
+          "method": "PATCH",
+          "path": "/organizations/{orgId}/users/{userId}/approve",
+          "subgroup": "SuperAdmin",
+          "auth": true,
+          "description": "Approves a pending user in a specific organization. SuperAdmin only.",
+          "pathParams": [
+            { "name": "orgId", "type": "uuid", "description": "Organization ID", "required": true },
+            { "name": "userId", "type": "uuid", "description": "User ID to approve", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "User approved",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<user_id>", "firstName": "John", "orgStatus": "active" } }
+            }
+          ]
+        },
+        {
+          "id": "sa-reject-pending-user",
+          "name": "Reject Pending User (SA)",
+          "method": "PATCH",
+          "path": "/organizations/{orgId}/users/{userId}/reject",
+          "subgroup": "SuperAdmin",
+          "auth": true,
+          "description": "Rejects a pending user in a specific organization. SuperAdmin only.",
+          "pathParams": [
+            { "name": "orgId", "type": "uuid", "description": "Organization ID", "required": true },
+            { "name": "userId", "type": "uuid", "description": "User ID to reject", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "User rejected",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "success": true } }
+            }
+          ]
+        },
+        {
+          "id": "sa-remove-user",
+          "name": "Remove User from Org (SA)",
+          "method": "DELETE",
+          "path": "/organizations/{orgId}/users/{userId}",
+          "subgroup": "SuperAdmin",
+          "auth": true,
+          "description": "Removes a user from a specific organization. SuperAdmin only.",
+          "pathParams": [
+            { "name": "orgId", "type": "uuid", "description": "Organization ID", "required": true },
+            { "name": "userId", "type": "uuid", "description": "User ID to remove", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "User removed",
+              "example": { "success": true, "statusCode": 200, "message": "Resource deleted", "data": { "success": true } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "user-management",
+      "name": "User Management",
+      "color": "#f59e0b",
+      "endpoints": [
+        {
+          "id": "create-user",
+          "name": "Create User",
+          "method": "POST",
+          "path": "/user-management",
+          "subgroup": null,
+          "auth": true,
+          "description": "Creates a new user within the organization. Admin or SuperAdmin only.",
+          "requestBody": {
+            "type": "json",
+            "example": { "email": "user@example.com", "password": "Pass@123", "firstName": "John", "lastName": "Doe", "countryCode": "91", "phone": "9876543210", "role": "USER" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "User created",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "id": "<user_id>", "firstName": "John", "lastName": "Doe", "email": "user@example.com", "isActive": true, "phone": "9876543210", "countryCode": "91", "roles": "USER", "isEmailVerified": true, "isPhoneVerified": false, "created_at": "..." } }
+            }
+          ]
+        },
+        {
+          "id": "get-users",
+          "name": "Get Users",
+          "method": "GET",
+          "path": "/user-management",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns a paginated list of users. Supports search by name or email.",
+          "queryParams": [
+            { "name": "page", "type": "number", "description": "Page number", "required": false },
+            { "name": "limit", "type": "number", "description": "Items per page", "required": false },
+            { "name": "search", "type": "string", "description": "Search by name or email", "required": false }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of users",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "count": 2, "data": [ { "id": "<user_id>", "firstName": "John", "email": "user@example.com", "roles": "USER", "isActive": true } ] } }
+            }
+          ]
+        },
+        {
+          "id": "get-my-profile",
+          "name": "Get My Profile",
+          "method": "GET",
+          "path": "/user-management/profile",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns the profile of the currently authenticated user.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "User profile",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<user_id>", "firstName": "John", "lastName": "Doe", "email": "user@example.com", "isActive": true, "phone": "9876543210", "countryCode": "91", "roles": "SUPERADMIN", "isEmailVerified": true, "isPhoneVerified": true } }
+            }
+          ]
+        },
+        {
+          "id": "update-my-profile",
+          "name": "Update My Profile",
+          "method": "PATCH",
+          "path": "/user-management/profile",
+          "subgroup": null,
+          "auth": true,
+          "description": "Updates the profile of the currently authenticated user.",
+          "requestBody": {
+            "type": "json",
+            "example": { "firstName": "Jane", "lastName": "Doe", "countryCode": "91", "phone": "9876543211" }
+          },
+          "responses": [
+            {
+              "status": 200,
+              "description": "Profile updated",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<user_id>", "firstName": "Jane", "lastName": "Doe", "email": "user@example.com", "phone": "9876543211" } }
+            }
+          ]
+        },
+        {
+          "id": "get-user-by-id",
+          "name": "Get User by ID",
+          "method": "GET",
+          "path": "/user-management/{userId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns a specific user's profile by their ID.",
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "User ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "User profile",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<user_id>", "firstName": "John", "lastName": "Doe", "email": "user@example.com", "isActive": true, "roles": "USER" } }
+            },
+            {
+              "status": 404,
+              "description": "User not found",
+              "example": { "success": false, "statusCode": 404, "message": "Target user not found or you do not have permission to access", "error": { "code": 100405, "errors": [] } }
+            }
+          ]
+        },
+        {
+          "id": "update-user-profile",
+          "name": "Update User Profile",
+          "method": "PATCH",
+          "path": "/user-management/{userId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Updates a specific user's profile. Admin or SuperAdmin only.",
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "User ID", "required": true }
+          ],
+          "requestBody": {
+            "type": "json",
+            "example": { "firstName": "Jane", "lastName": "Doe", "countryCode": "91", "phone": "9876543211" }
+          },
+          "responses": [
+            {
+              "status": 200,
+              "description": "User updated",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<user_id>", "firstName": "Jane", "phone": "9876543211" } }
+            }
+          ]
+        },
+        {
+          "id": "update-user-role",
+          "name": "Update User Role",
+          "method": "PATCH",
+          "path": "/user-management/{userId}/role",
+          "subgroup": null,
+          "auth": true,
+          "description": "Updates the role of a specific user. Valid roles: SUPERADMIN, ADMIN, USER.",
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "User ID", "required": true }
+          ],
+          "requestBody": {
+            "type": "json",
+            "example": { "role": "ADMIN" }
+          },
+          "responses": [
+            {
+              "status": 200,
+              "description": "Role updated",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<user_id>", "roles": "ADMIN" } }
+            },
+            {
+              "status": 400,
+              "description": "Validation failed",
+              "example": { "success": false, "statusCode": 400, "message": "Validation failed", "error": { "code": -2, "errors": [ { "field": "role", "messages": ["role must be one of the following values: SUPERADMIN, ADMIN, USER"] } ] } }
+            }
+          ]
+        },
+        {
+          "id": "delete-user",
+          "name": "Delete User",
+          "method": "DELETE",
+          "path": "/user-management/{userId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Permanently deletes a user by their ID.",
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "User ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "User deleted",
+              "example": { "success": true, "statusCode": 200, "message": "Resource deleted", "data": { "success": true } }
+            },
+            {
+              "status": 404,
+              "description": "User not found",
+              "example": { "success": false, "statusCode": 404, "message": "Target user not found or you do not have permission to access", "error": { "code": 100405, "errors": [] } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "users",
+      "name": "Users",
+      "color": "#3b82f6",
+      "endpoints": [
+        {
+          "id": "change-email",
+          "name": "Change Email",
+          "method": "POST",
+          "path": "/users/email/change",
+          "subgroup": "Change Email",
+          "auth": true,
+          "description": "Initiates an email change request by sending a verification code to the new email address.",
+          "requestBody": {
+            "type": "json",
+            "example": { "password": "CurrentPass@123", "newEmail": "newemail@example.com" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Verification code sent",
+              "example": { "success": true, "statusCode": 201, "message": "Verification code sent to your new email address", "data": { "success": true, "message": "Verification code sent to your new email address" } }
+            }
+          ]
+        },
+        {
+          "id": "verify-new-email",
+          "name": "Verify New Email",
+          "method": "POST",
+          "path": "/users/email/verify",
+          "subgroup": "Change Email",
+          "auth": true,
+          "description": "Completes the email change flow by verifying the OTP sent to the new email.",
+          "requestBody": {
+            "type": "json",
+            "example": { "otp": "688264" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Email changed",
+              "example": { "success": true, "statusCode": 201, "message": "Email address changed successfully", "data": { "success": true, "message": "Email address changed successfully" } }
+            }
+          ]
+        },
+        {
+          "id": "get-profile",
+          "name": "Get Profile",
+          "method": "GET",
+          "path": "/users/profile",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns the profile of the currently authenticated user.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "User profile",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<user_id>", "firstName": "John", "lastName": "Doe", "email": "user@example.com", "isActive": true, "phone": "9876543210", "countryCode": "91", "roles": "SUPERADMIN", "isEmailVerified": true, "isPhoneVerified": true } }
+            }
+          ]
+        },
+        {
+          "id": "change-password",
+          "name": "Change Password",
+          "method": "POST",
+          "path": "/users/password/change",
+          "subgroup": null,
+          "auth": true,
+          "description": "Changes the current user's password by providing both old and new passwords.",
+          "requestBody": {
+            "type": "json",
+            "example": { "currentPassword": "OldPass@123", "newPassword": "NewPass@123" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Password changed",
+              "example": { "success": true, "statusCode": 201, "message": "Password changed successfully", "data": { "success": true, "message": "Password changed successfully" } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sa-subscriptions",
+      "name": "SA Subscriptions",
+      "color": "#8b5cf6",
+      "endpoints": [
+        {
+          "id": "sa-get-subscriptions",
+          "name": "Get All Subscription Plans",
+          "method": "GET",
+          "path": "/admin/subscriptions",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns all subscription plans. SuperAdmin only.",
+          "queryParams": [
+            { "name": "page", "type": "number", "description": "Page number", "required": false },
+            { "name": "limit", "type": "number", "description": "Items per page", "required": false }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Subscription plans list",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "data": [], "meta": { "page": 1, "limit": 10, "total": 0, "totalPages": 0 } } }
+            }
+          ]
+        },
+        {
+          "id": "sa-get-subscription-by-id",
+          "name": "Get Subscription Plan by ID",
+          "method": "GET",
+          "path": "/admin/subscriptions/{id}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns a specific subscription plan by ID. SuperAdmin only.",
+          "pathParams": [
+            { "name": "id", "type": "uuid", "description": "Subscription ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Subscription plan details",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<sub_id>", "name": "Base Plan", "description": "...", "price": "99.00", "currency": "INR", "durationInDays": 30, "features": ["feature 1", "feature 2"], "isActive": true, "createdAt": "...", "updatedAt": "..." } }
+            }
+          ]
+        },
+        {
+          "id": "sa-create-subscription",
+          "name": "Create Subscription Plan",
+          "method": "POST",
+          "path": "/admin/subscriptions",
+          "subgroup": null,
+          "auth": true,
+          "description": "Creates a new subscription plan. SuperAdmin only. Creates the plan in Razorpay.",
+          "requestBody": {
+            "type": "json",
+            "example": { "name": "Base Plan", "description": "This is the base plan", "price": 699, "currency": "INR", "durationInDays": 30, "features": { "maxMCQs": 1000, "storageGB": 1, "maxCurriculums": 5 }, "isActive": true, "interval": "daily", "intervalCount": 10, "trialDays": 3, "totalBillingCycles": 3 }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Subscription plan created",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "id": "<sub_id>", "name": "Base Plan", "price": 699, "currency": "INR", "durationInDays": 30, "features": { "maxMCQs": 1000, "storageGB": 1, "maxCurriculums": 5 }, "isActive": true, "razorpayPlanId": "plan_xxx", "createdAt": "..." } }
+            }
+          ]
+        },
+        {
+          "id": "sa-update-subscription",
+          "name": "Update Subscription Plan",
+          "method": "PATCH",
+          "path": "/admin/subscriptions/{id}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Updates an existing subscription plan. SuperAdmin only.",
+          "pathParams": [
+            { "name": "id", "type": "uuid", "description": "Subscription ID", "required": true }
+          ],
+          "requestBody": {
+            "type": "json",
+            "example": { "features": ["feature 1", "feature 2", "feature 3"], "isActive": true }
+          },
+          "responses": [
+            {
+              "status": 200,
+              "description": "Subscription updated",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<sub_id>", "name": "Base Plan", "features": ["feature 1", "feature 2", "feature 3"], "isActive": true } }
+            }
+          ]
+        },
+        {
+          "id": "sa-delete-subscription",
+          "name": "Delete Subscription Plan",
+          "method": "DELETE",
+          "path": "/admin/subscriptions/{id}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Deactivates a subscription plan. SuperAdmin only.",
+          "pathParams": [
+            { "name": "id", "type": "uuid", "description": "Subscription ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Subscription deactivated",
+              "example": { "success": true, "statusCode": 200, "message": "Subscription deactivated successfully", "data": { "message": "Subscription deactivated successfully" } }
+            }
+          ]
+        },
+        {
+          "id": "sa-get-user-subscription",
+          "name": "Get User Subscription",
+          "method": "GET",
+          "path": "/admin/subscriptions/user/{userId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns the current subscription status of a specific user. SuperAdmin only.",
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "User ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "User subscription details",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "hasActiveSubscription": true, "subscription": { "id": "<sub_id>", "name": "Base Plan" }, "status": "active", "startDate": "...", "endDate": "...", "remainingDays": 30 } }
+            }
+          ]
+        },
+        {
+          "id": "sa-grant-subscription",
+          "name": "Grant Subscription to User",
+          "method": "POST",
+          "path": "/admin/subscriptions/grant/{userId}/{subscriptionId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Grants a subscription plan to a user directly (without payment). SuperAdmin only.",
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "User ID", "required": true },
+            { "name": "subscriptionId", "type": "uuid", "description": "Subscription plan ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 201,
+              "description": "Subscription granted",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "id": "<user_sub_id>", "userId": "<user_id>", "subscription": { "id": "<sub_id>", "name": "Base Plan" }, "startDate": "...", "endDate": "...", "status": "active", "remainingDays": 30 } }
+            }
+          ]
+        },
+        {
+          "id": "sa-cancel-subscription",
+          "name": "Cancel User Subscription",
+          "method": "DELETE",
+          "path": "/admin/subscriptions/user/{userId}/cancel",
+          "subgroup": null,
+          "auth": true,
+          "description": "Cancels a user's subscription. Can cancel immediately or at end of billing cycle.",
+          "pathParams": [
+            { "name": "userId", "type": "uuid", "description": "User ID", "required": true }
+          ],
+          "queryParams": [
+            { "name": "immediate", "type": "boolean", "description": "Cancel immediately (true) or at end of billing cycle (false)", "required": false }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Subscription cancelled",
+              "example": { "success": true, "statusCode": 200, "message": "Subscription will be cancelled at the end of current billing cycle", "data": { "message": "Subscription will be cancelled at the end of current billing cycle" } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "user-subscriptions",
+      "name": "User Subscriptions",
+      "color": "#ec4899",
+      "endpoints": [
+        {
+          "id": "get-subscription-plans",
+          "name": "Get Subscription Plans",
+          "method": "GET",
+          "path": "/subscriptions/plans",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns all available subscription plans for the user to choose from.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "Available plans",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": [ { "id": "<sub_id>", "name": "Base Plan", "description": "...", "price": "99.00", "currency": "INR", "durationInDays": 30, "features": ["feature 1", "feature 2"], "isActive": true } ] }
+            }
+          ]
+        },
+        {
+          "id": "start-trial",
+          "name": "Start Trial",
+          "method": "POST",
+          "path": "/subscriptions/trial",
+          "subgroup": null,
+          "auth": true,
+          "description": "Activates a free trial subscription for the authenticated user.",
+          "responses": [
+            {
+              "status": 201,
+              "description": "Trial started",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "id": "<user_sub_id>", "userId": "<user_id>", "subscription": { "id": "<sub_id>", "name": "Base Plan" }, "startDate": "...", "endDate": "...", "status": "trial", "remainingDays": 14 } }
+            }
+          ]
+        },
+        {
+          "id": "get-current-plan",
+          "name": "Get Current Plan",
+          "method": "GET",
+          "path": "/subscriptions/current",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns the current active subscription plan for the authenticated user.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "Current subscription",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "hasActiveSubscription": true, "subscription": { "id": "<sub_id>", "name": "Base Plan", "description": "...", "features": ["feature 1"] }, "status": "active", "startDate": "...", "endDate": "...", "remainingDays": 30 } }
+            }
+          ]
+        },
+        {
+          "id": "purchase-subscription",
+          "name": "Purchase Subscription",
+          "method": "POST",
+          "path": "/subscriptions/{subscriptionId}/purchase",
+          "subgroup": null,
+          "auth": true,
+          "description": "Initiates a subscription purchase via Razorpay. Returns order details to complete payment on frontend.",
+          "pathParams": [
+            { "name": "subscriptionId", "type": "uuid", "description": "Subscription plan ID to purchase", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 201,
+              "description": "Razorpay order created",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "orderId": "order_xxx", "amount": 9900, "currency": "INR", "keyId": "rzp_key_id", "receipt": "rcpt_xxx", "paymentRecordId": "<payment_id>", "subscription": { "id": "<sub_id>", "name": "Base Plan", "price": 99, "durationInDays": 30 }, "user": { "id": "<user_id>", "email": "user@example.com" } } }
+            }
+          ]
+        },
+        {
+          "id": "verify-payment",
+          "name": "Verify Payment",
+          "method": "POST",
+          "path": "/subscriptions/verify-payment",
+          "subgroup": null,
+          "auth": true,
+          "description": "Verifies a Razorpay payment and activates the subscription for the user.",
+          "requestBody": {
+            "type": "json",
+            "example": { "razorpay_order_id": "order_xxx", "razorpay_payment_id": "pay_xxx", "razorpay_signature": "signature_xxx" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Payment verified and subscription activated",
+              "example": { "success": true, "statusCode": 201, "message": "Payment verified and subscription activated successfully", "data": { "success": true, "message": "Payment verified and subscription activated successfully", "paymentId": "<payment_id>", "subscriptionId": "<user_sub_id>", "startDate": "...", "endDate": "...", "status": "active" } }
+            }
+          ]
+        },
+        {
+          "id": "get-payment-history",
+          "name": "Get Payment History",
+          "method": "GET",
+          "path": "/subscriptions/payments",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns the payment history for the authenticated user.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "Payment history",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": [ { "id": "<payment_id>", "subscriptionId": "<sub_id>", "subscription": { "name": "Base Plan" }, "amount": "99.00", "currency": "INR", "status": "paid", "createdAt": "..." } ] }
+            }
+          ]
+        },
+        {
+          "id": "get-payment-by-id",
+          "name": "Get Payment by ID",
+          "method": "GET",
+          "path": "/subscriptions/payments/{paymentId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns details of a specific payment record.",
+          "pathParams": [
+            { "name": "paymentId", "type": "uuid", "description": "Payment record ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Payment details",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<payment_id>", "amount": "99.00", "currency": "INR", "status": "paid", "orderId": "order_xxx", "paymentId": "pay_xxx" } }
+            }
+          ]
+        },
+        {
+          "id": "cancel-plan",
+          "name": "Cancel Subscription",
+          "method": "DELETE",
+          "path": "/subscriptions/cancel",
+          "subgroup": null,
+          "auth": true,
+          "description": "Cancels the current user's active subscription at the end of the billing cycle.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "Subscription cancelled",
+              "example": { "success": true, "statusCode": 200, "message": "Subscription will be cancelled at the end of current billing cycle", "data": { "message": "Subscription will be cancelled at the end of current billing cycle" } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "academics",
+      "name": "Academics",
+      "color": "#14b8a6",
+      "endpoints": [
+        {
+          "id": "create-curriculum",
+          "name": "Create Curriculum",
+          "method": "POST",
+          "path": "/curriculums",
+          "subgroup": "Curriculum",
+          "auth": true,
+          "description": "Creates a new curriculum within the organization.",
+          "requestBody": {
+            "type": "json",
+            "example": { "name": "JEE", "description": "JEE is the curriculum activity" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Curriculum created",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "id": "<curriculum_id>", "name": "JEE", "description": "JEE is the curriculum activity", "lastUpdated": "...", "status": "Active", "createdAt": "...", "updatedAt": "..." } }
+            }
+          ]
+        },
+        {
+          "id": "get-curriculums",
+          "name": "Get Curriculums",
+          "method": "GET",
+          "path": "/curriculums",
+          "subgroup": "Curriculum",
+          "auth": true,
+          "description": "Returns a paginated list of all curriculums in the organization.",
+          "queryParams": [
+            { "name": "page", "type": "number", "description": "Page number", "required": false },
+            { "name": "limit", "type": "number", "description": "Items per page", "required": false }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of curriculums",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "data": [ { "id": "<curriculum_id>", "name": "JEE", "status": "Active", "subjects": [] } ], "meta": { "page": 1, "limit": 10, "total": 1, "totalPages": 1 } } }
+            }
+          ]
+        },
+        {
+          "id": "get-curriculum-by-id",
+          "name": "Get Curriculum by ID",
+          "method": "GET",
+          "path": "/curriculums/{id}",
+          "subgroup": "Curriculum",
+          "auth": true,
+          "description": "Returns details of a specific curriculum by ID.",
+          "pathParams": [
+            { "name": "id", "type": "uuid", "description": "Curriculum ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Curriculum details",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<curriculum_id>", "name": "JEE", "description": "...", "status": "Active", "subjects": [] } }
+            }
+          ]
+        },
+        {
+          "id": "update-curriculum",
+          "name": "Update Curriculum",
+          "method": "PATCH",
+          "path": "/curriculums/{id}",
+          "subgroup": "Curriculum",
+          "auth": true,
+          "description": "Updates a curriculum's name or description.",
+          "pathParams": [
+            { "name": "id", "type": "uuid", "description": "Curriculum ID", "required": true }
+          ],
+          "requestBody": {
+            "type": "json",
+            "example": { "name": "Updated Name", "description": "Updated description" }
+          },
+          "responses": [
+            {
+              "status": 200,
+              "description": "Curriculum updated",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<curriculum_id>", "name": "Updated Name", "description": "Updated description" } }
+            }
+          ]
+        },
+        {
+          "id": "delete-curriculum",
+          "name": "Delete Curriculum",
+          "method": "DELETE",
+          "path": "/curriculums/{id}",
+          "subgroup": "Curriculum",
+          "auth": true,
+          "description": "Permanently deletes a curriculum and all its subjects, topics, and questions.",
+          "pathParams": [
+            { "name": "id", "type": "uuid", "description": "Curriculum ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Curriculum deleted",
+              "example": { "success": true, "statusCode": 200, "message": "Curriculum deleted successfully", "data": { "message": "Curriculum deleted successfully" } }
+            }
+          ]
+        },
+        {
+          "id": "get-curriculum-stats",
+          "name": "Get Curriculum Stats",
+          "method": "GET",
+          "path": "/curriculums/{id}/stats",
+          "subgroup": "Curriculum",
+          "auth": true,
+          "description": "Returns aggregate statistics for a curriculum including subject, topic, and question counts.",
+          "pathParams": [
+            { "name": "id", "type": "uuid", "description": "Curriculum ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Curriculum statistics",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "curriculumId": "<curriculum_id>", "curriculumName": "JEE", "totalSubjects": 3, "totalTopics": 12, "totalQuestions": 150 } }
+            }
+          ]
+        },
+        {
+          "id": "create-subject",
+          "name": "Create Subject",
+          "method": "POST",
+          "path": "/curriculums/{curriculumId}/subjects",
+          "subgroup": "Subjects",
+          "auth": true,
+          "description": "Creates a new subject within a curriculum.",
+          "pathParams": [
+            { "name": "curriculumId", "type": "uuid", "description": "Curriculum ID", "required": true }
+          ],
+          "requestBody": {
+            "type": "json",
+            "example": { "name": "Physics" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Subject created",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "id": "<subject_id>", "name": "Physics", "curriculumId": "<curriculum_id>", "status": "Active", "createdAt": "..." } }
+            }
+          ]
+        },
+        {
+          "id": "get-subjects",
+          "name": "Get Subjects",
+          "method": "GET",
+          "path": "/curriculums/{curriculumId}/subjects",
+          "subgroup": "Subjects",
+          "auth": true,
+          "description": "Returns a paginated list of all subjects in a curriculum.",
+          "pathParams": [
+            { "name": "curriculumId", "type": "uuid", "description": "Curriculum ID", "required": true }
+          ],
+          "queryParams": [
+            { "name": "page", "type": "number", "description": "Page number", "required": false },
+            { "name": "limit", "type": "number", "description": "Items per page", "required": false }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of subjects",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "data": [ { "id": "<subject_id>", "name": "Physics", "status": "Active", "topics": [] } ], "meta": { "page": 1, "limit": 10, "total": 1, "totalPages": 1 } } }
+            }
+          ]
+        },
+        {
+          "id": "get-subject-by-id",
+          "name": "Get Subject by ID",
+          "method": "GET",
+          "path": "/curriculums/{curriculumId}/subjects/{subjectId}",
+          "subgroup": "Subjects",
+          "auth": true,
+          "description": "Returns details of a specific subject.",
+          "pathParams": [
+            { "name": "curriculumId", "type": "uuid", "description": "Curriculum ID", "required": true },
+            { "name": "subjectId", "type": "uuid", "description": "Subject ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Subject details",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<subject_id>", "name": "Physics", "curriculumId": "<curriculum_id>", "status": "Active", "topics": [] } }
+            }
+          ]
+        },
+        {
+          "id": "update-subject",
+          "name": "Update Subject",
+          "method": "PATCH",
+          "path": "/curriculums/{curriculumId}/subjects/{subjectId}",
+          "subgroup": "Subjects",
+          "auth": true,
+          "description": "Updates a subject's name.",
+          "pathParams": [
+            { "name": "curriculumId", "type": "uuid", "description": "Curriculum ID", "required": true },
+            { "name": "subjectId", "type": "uuid", "description": "Subject ID", "required": true }
+          ],
+          "requestBody": {
+            "type": "json",
+            "example": { "name": "Mathematics" }
+          },
+          "responses": [
+            {
+              "status": 200,
+              "description": "Subject updated",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<subject_id>", "name": "Mathematics", "status": "Active" } }
+            }
+          ]
+        },
+        {
+          "id": "delete-subject",
+          "name": "Delete Subject",
+          "method": "DELETE",
+          "path": "/curriculums/{curriculumId}/subjects/{subjectId}",
+          "subgroup": "Subjects",
+          "auth": true,
+          "description": "Permanently deletes a subject and all its topics and questions.",
+          "pathParams": [
+            { "name": "curriculumId", "type": "uuid", "description": "Curriculum ID", "required": true },
+            { "name": "subjectId", "type": "uuid", "description": "Subject ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Subject deleted",
+              "example": { "success": true, "statusCode": 200, "message": "Subject deleted successfully", "data": { "message": "Subject deleted successfully" } }
+            }
+          ]
+        },
+        {
+          "id": "create-topic",
+          "name": "Create Topic",
+          "method": "POST",
+          "path": "/curriculums/{curriculumId}/subjects/{subjectId}/topics",
+          "subgroup": "Topics",
+          "auth": true,
+          "description": "Creates a new topic within a subject.",
+          "pathParams": [
+            { "name": "curriculumId", "type": "uuid", "description": "Curriculum ID", "required": true },
+            { "name": "subjectId", "type": "uuid", "description": "Subject ID", "required": true }
+          ],
+          "requestBody": {
+            "type": "json",
+            "example": { "name": "Thermodynamics", "complexity": "Medium", "unit": "Unit 4" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Topic created",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "id": "<topic_id>", "name": "Thermodynamics", "subjectId": "<subject_id>", "unit": "Unit 4", "complexity": "Medium", "questionsCount": 0, "subTopicsCount": 0 } }
+            }
+          ]
+        },
+        {
+          "id": "get-topics",
+          "name": "Get Topics",
+          "method": "GET",
+          "path": "/curriculums/{curriculumId}/subjects/{subjectId}/topics",
+          "subgroup": "Topics",
+          "auth": true,
+          "description": "Returns a paginated list of all topics in a subject.",
+          "pathParams": [
+            { "name": "curriculumId", "type": "uuid", "description": "Curriculum ID", "required": true },
+            { "name": "subjectId", "type": "uuid", "description": "Subject ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of topics",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "data": [ { "id": "<topic_id>", "name": "Thermodynamics", "complexity": "Medium", "questionsCount": 0 } ], "meta": { "page": 1, "limit": 10, "total": 1, "totalPages": 1 } } }
+            }
+          ]
+        },
+        {
+          "id": "get-topic-by-id",
+          "name": "Get Topic by ID",
+          "method": "GET",
+          "path": "/curriculums/{curriculumId}/subjects/{subjectId}/topics/{topicId}",
+          "subgroup": "Topics",
+          "auth": true,
+          "description": "Returns details of a specific topic.",
+          "pathParams": [
+            { "name": "curriculumId", "type": "uuid", "description": "Curriculum ID", "required": true },
+            { "name": "subjectId", "type": "uuid", "description": "Subject ID", "required": true },
+            { "name": "topicId", "type": "uuid", "description": "Topic ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Topic details",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<topic_id>", "name": "Thermodynamics", "complexity": "Medium", "questionsCount": 0 } }
+            }
+          ]
+        },
+        {
+          "id": "update-topic",
+          "name": "Update Topic",
+          "method": "PATCH",
+          "path": "/curriculums/{curriculumId}/subjects/{subjectId}/topics/{topicId}",
+          "subgroup": "Topics",
+          "auth": true,
+          "description": "Updates a topic's name, complexity, or question count.",
+          "pathParams": [
+            { "name": "curriculumId", "type": "uuid", "description": "Curriculum ID", "required": true },
+            { "name": "subjectId", "type": "uuid", "description": "Subject ID", "required": true },
+            { "name": "topicId", "type": "uuid", "description": "Topic ID", "required": true }
+          ],
+          "requestBody": {
+            "type": "json",
+            "example": { "name": "Wave Optics", "complexity": "Hard", "questionsCount": 50 }
+          },
+          "responses": [
+            {
+              "status": 200,
+              "description": "Topic updated",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<topic_id>", "name": "Wave Optics", "complexity": "Hard", "questionsCount": 50 } }
+            }
+          ]
+        },
+        {
+          "id": "delete-topic",
+          "name": "Delete Topic",
+          "method": "DELETE",
+          "path": "/curriculums/{curriculumId}/subjects/{subjectId}/topics/{topicId}",
+          "subgroup": "Topics",
+          "auth": true,
+          "description": "Permanently deletes a topic and all its questions.",
+          "pathParams": [
+            { "name": "curriculumId", "type": "uuid", "description": "Curriculum ID", "required": true },
+            { "name": "subjectId", "type": "uuid", "description": "Subject ID", "required": true },
+            { "name": "topicId", "type": "uuid", "description": "Topic ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Topic deleted",
+              "example": { "success": true, "statusCode": 200, "message": "Topic deleted successfully", "data": { "message": "Topic deleted successfully" } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "api-keys",
+      "name": "API Keys",
+      "color": "#f97316",
+      "endpoints": [
+        {
+          "id": "create-api-key",
+          "name": "Create API Key",
+          "method": "POST",
+          "path": "/api-keys",
+          "subgroup": null,
+          "auth": true,
+          "description": "Creates a new API key. The raw key is shown only once — store it securely.",
+          "requestBody": {
+            "type": "json",
+            "example": { "label": "my-api-key" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "API key created",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "apiKey": { "id": "<key_id>", "label": "my-api-key", "maskedKey": "019c3606...7afd46", "createdAt": "...", "lastUsedAt": null, "isActive": true, "usageCount": 0 }, "rawKey": "<full_api_key_shown_only_once>" } }
+            }
+          ]
+        },
+        {
+          "id": "get-api-keys",
+          "name": "Get API Keys",
+          "method": "GET",
+          "path": "/api-keys",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns all API keys for the authenticated user. Keys are masked for security.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of API keys",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": [ { "id": "<key_id>", "label": "my-api-key", "maskedKey": "019c3606...7afd46", "isActive": true, "usageCount": 0 } ] }
+            }
+          ]
+        },
+        {
+          "id": "get-api-key-by-id",
+          "name": "Get API Key by ID",
+          "method": "GET",
+          "path": "/api-keys/{keyId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns details of a specific API key by ID.",
+          "pathParams": [
+            { "name": "keyId", "type": "uuid", "description": "API Key ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "API key details",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<key_id>", "label": "my-api-key", "maskedKey": "019c3606...7afd46", "isActive": true, "usageCount": 5 } }
+            }
+          ]
+        },
+        {
+          "id": "update-api-key",
+          "name": "Update API Key",
+          "method": "PATCH",
+          "path": "/api-keys/{keyId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Updates the label or active status of an API key.",
+          "pathParams": [
+            { "name": "keyId", "type": "uuid", "description": "API Key ID", "required": true }
+          ],
+          "requestBody": {
+            "type": "json",
+            "example": { "label": "updated-label", "isActive": false }
+          },
+          "responses": [
+            {
+              "status": 200,
+              "description": "API key updated",
+              "example": { "success": true, "statusCode": 200, "message": "Resource updated", "data": { "id": "<key_id>", "label": "updated-label", "isActive": false } }
+            }
+          ]
+        },
+        {
+          "id": "delete-api-key",
+          "name": "Delete API Key",
+          "method": "DELETE",
+          "path": "/api-keys/{keyId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Permanently deletes an API key. This action is irreversible.",
+          "pathParams": [
+            { "name": "keyId", "type": "uuid", "description": "API Key ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "API key deleted",
+              "example": { "success": true, "statusCode": 200, "message": "API key deleted successfully", "data": { "message": "API key deleted successfully" } }
+            }
+          ]
+        },
+        {
+          "id": "verify-api-key",
+          "name": "Verify API Key",
+          "method": "GET",
+          "path": "/api-keys/test/verify",
+          "subgroup": null,
+          "auth": false,
+          "description": "Tests if an API key is valid. Pass the key in the x-api-key header.",
+          "headers": [
+            { "key": "x-api-key", "value": "<your_api_key>", "description": "API key for authentication" }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "API key valid",
+              "example": { "success": true, "statusCode": 200, "message": "API key is valid", "data": { "message": "API key is valid", "userId": "<user_id>" } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "documents",
+      "name": "Documents",
+      "color": "#06b6d4",
+      "endpoints": [
+        {
+          "id": "upload-document",
+          "name": "Upload Document",
+          "method": "POST",
+          "path": "/documents/upload",
+          "subgroup": null,
+          "auth": true,
+          "description": "Uploads a PDF document to S3 and associates it with a curriculum. Supports multipart form data.",
+          "requestBody": {
+            "type": "formdata",
+            "fields": [
+              { "name": "name", "type": "text", "description": "Document name", "required": true },
+              { "name": "description", "type": "text", "description": "Document description", "required": false },
+              { "name": "curriculumId", "type": "text", "description": "Associated curriculum ID", "required": true },
+              { "name": "file", "type": "file", "description": "PDF file to upload", "required": true }
+            ]
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Document uploaded",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "document": { "id": "<doc_id>", "name": "Physics Notes", "description": "...", "fileName": "physics.pdf", "fileSize": 3441, "curriculumId": "<curriculum_id>", "status": "PENDING", "uploadedBy": "<user_id>", "createdAt": "..." }, "downloadUrl": "<presigned_s3_url>" } }
+            }
+          ]
+        },
+        {
+          "id": "get-documents",
+          "name": "Get Documents",
+          "method": "GET",
+          "path": "/documents",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns a paginated list of documents. Can be filtered by curriculum.",
+          "queryParams": [
+            { "name": "page", "type": "number", "description": "Page number", "required": false },
+            { "name": "limit", "type": "number", "description": "Items per page", "required": false },
+            { "name": "curriculumId", "type": "uuid", "description": "Filter by curriculum", "required": false }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of documents",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "data": [], "meta": { "page": 1, "limit": 10, "total": 0, "totalPages": 0 }, "storageUsed": 0 } }
+            }
+          ]
+        },
+        {
+          "id": "get-storage-info",
+          "name": "Get Storage Info",
+          "method": "GET",
+          "path": "/documents/storage-info",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns storage usage statistics for the authenticated user.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "Storage info",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "storageUsedBytes": 5242880, "storageUsedGB": 0.005, "storageLimitGB": 1, "usagePercentage": 0.5, "totalFiles": 3 } }
+            }
+          ]
+        },
+        {
+          "id": "get-file-count",
+          "name": "Get File Count",
+          "method": "GET",
+          "path": "/documents/file-count",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns the total count of documents for the authenticated user.",
+          "responses": [
+            {
+              "status": 200,
+              "description": "File count",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "totalFiles": 3 } }
+            }
+          ]
+        },
+        {
+          "id": "get-document-by-id",
+          "name": "Get Document by ID",
+          "method": "GET",
+          "path": "/documents/{documentId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns details of a specific document by ID.",
+          "pathParams": [
+            { "name": "documentId", "type": "uuid", "description": "Document ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Document details",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<doc_id>", "name": "Physics Notes", "fileName": "physics.pdf", "fileSize": 3441, "curriculumId": "<curriculum_id>", "status": "COMPLETED", "uploadedBy": "<user_id>" } }
+            }
+          ]
+        },
+        {
+          "id": "download-document",
+          "name": "Download Document",
+          "method": "GET",
+          "path": "/documents/{documentId}/download",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns a pre-signed S3 URL for downloading the document. URL is valid for 72 hours.",
+          "pathParams": [
+            { "name": "documentId", "type": "uuid", "description": "Document ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Download URL",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "downloadUrl": "<presigned_s3_url_valid_for_72_hours>" } }
+            }
+          ]
+        },
+        {
+          "id": "delete-document",
+          "name": "Delete Document",
+          "method": "DELETE",
+          "path": "/documents/{documentId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Permanently deletes a document from storage and the database.",
+          "pathParams": [
+            { "name": "documentId", "type": "uuid", "description": "Document ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Document deleted",
+              "example": { "success": true, "statusCode": 200, "message": "Document deleted successfully", "data": { "message": "Document deleted successfully" } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "test-series",
+      "name": "Test Series",
+      "color": "#ef4444",
+      "endpoints": [
+        {
+          "id": "generate-mcq",
+          "name": "Generate MCQ",
+          "method": "POST",
+          "path": "/testseries/generate-mcq",
+          "subgroup": null,
+          "auth": true,
+          "description": "Uses AI to generate multiple-choice questions from an uploaded document.",
+          "requestBody": {
+            "type": "json",
+            "example": { "documentId": "<document_id>", "count": 5 }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "MCQs generated",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "mcqs": [ { "question": "What happens to the current amplitude at resonance in an LCR circuit?", "choices": ["A. It is minimum", "B. It is maximum", "C. It becomes zero", "D. It oscillates wildly"], "correctAnswer": "B" } ] } }
+            }
+          ]
+        },
+        {
+          "id": "create-test",
+          "name": "Create Test Series",
+          "method": "POST",
+          "path": "/testseries",
+          "subgroup": null,
+          "auth": true,
+          "description": "Creates a new AI-powered test series from document(s). The test is generated asynchronously.",
+          "requestBody": {
+            "type": "json",
+            "example": { "name": "Physics Mock Test 1", "testType": "PRACTICE", "description": "A practice test on electromagnetism", "documentIds": ["<document_id>"], "totalQuestions": 10, "difficulty": "MEDIUM" }
+          },
+          "responses": [
+            {
+              "status": 201,
+              "description": "Test series created (async generation)",
+              "example": { "success": true, "statusCode": 201, "message": "Resource created successfully", "data": { "id": "<test_id>", "name": "Physics Mock Test 1", "testType": "PRACTICE", "totalQuestions": 10, "difficulty": "MEDIUM", "status": "PENDING", "questions": null, "createdAt": "..." } }
+            }
+          ]
+        },
+        {
+          "id": "get-test-series",
+          "name": "Get Test Series",
+          "method": "GET",
+          "path": "/testseries",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns a paginated list of all test series. Can be filtered by status.",
+          "queryParams": [
+            { "name": "page", "type": "number", "description": "Page number", "required": false },
+            { "name": "limit", "type": "number", "description": "Items per page", "required": false },
+            { "name": "status", "type": "string", "description": "Filter by status (PENDING, PROCESSING, COMPLETED, FAILED)", "required": false }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "List of test series",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "data": [ { "id": "<test_id>", "name": "Physics Mock Test 1", "testType": "PRACTICE", "totalQuestions": 10, "status": "COMPLETED" } ], "meta": { "page": 1, "limit": 10, "total": 1, "totalPages": 1 } } }
+            }
+          ]
+        },
+        {
+          "id": "get-test-by-id",
+          "name": "Get Test Series by ID",
+          "method": "GET",
+          "path": "/testseries/{testId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Returns the full details of a test series including all questions and answers.",
+          "pathParams": [
+            { "name": "testId", "type": "uuid", "description": "Test series ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Test series details with questions",
+              "example": { "success": true, "statusCode": 200, "message": "Success", "data": { "id": "<test_id>", "name": "Physics Mock Test 1", "testType": "PRACTICE", "totalQuestions": 10, "difficulty": "MEDIUM", "status": "COMPLETED", "questions": [ { "id": "<question_id>", "question": "What is Ohm's Law?", "choices": ["A. V = IR", "B. V = I/R", "C. V = R/I", "D. V = I+R"], "correctAnswer": "A" } ], "createdAt": "..." } }
+            }
+          ]
+        },
+        {
+          "id": "delete-test",
+          "name": "Delete Test Series",
+          "method": "DELETE",
+          "path": "/testseries/{testId}",
+          "subgroup": null,
+          "auth": true,
+          "description": "Permanently deletes a test series and all its questions.",
+          "pathParams": [
+            { "name": "testId", "type": "uuid", "description": "Test series ID", "required": true }
+          ],
+          "responses": [
+            {
+              "status": 200,
+              "description": "Test series deleted",
+              "example": { "success": true, "statusCode": 200, "message": "Test series deleted successfully", "data": { "message": "Test series deleted successfully" } }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

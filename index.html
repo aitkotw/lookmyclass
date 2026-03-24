@@ -3,14 +3,170 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
+  <title>LookMyClass API Documentation</title>
   <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="LookMyClass API Documentation - EdTech SaaS platform for academic curricula, AI-powered tests, documents, and subscriptions." />
 </head>
 <body>
-  <div class="container">
-    <h1 id="greeting">Hello World</h1>
-    <button id="btn" onclick="changeGreeting()">Click Me</button>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <a href="#" class="logo" id="logoLink">
+        <span class="logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor" opacity="0.9"/>
+            <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>
+            <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </span>
+        <span class="logo-text">LookMyClass</span>
+      </a>
+      <span class="api-badge">API Docs</span>
+    </div>
+    <div class="header-center">
+      <div class="search-wrapper">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+          <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search endpoints... (Ctrl+K)" autocomplete="off" />
+        <kbd class="search-kbd" id="searchKbd">Ctrl+K</kbd>
+      </div>
+    </div>
+    <div class="header-right">
+      <a href="https://lookmyclass.com" target="_blank" rel="noopener" class="header-link">
+        Website
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="15,3 21,3 21,9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Layout -->
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner">
+
+        <!-- Base URL -->
+        <div class="base-url-section">
+          <div class="base-url-label">Base URL</div>
+          <div class="base-url-value" id="baseUrlDisplay">
+            <code>https://api.lookmyclass.com</code>
+            <button class="copy-btn-inline" data-copy="https://api.lookmyclass.com" title="Copy base URL">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="sidebar-nav" id="sidebarNav" aria-label="API Navigation">
+          <div class="nav-loading">Loading endpoints...</div>
+        </nav>
+
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+
+      <!-- Welcome Section -->
+      <section class="welcome-section" id="welcomeSection">
+        <div class="welcome-header">
+          <div class="welcome-logo">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" fill="#6366f1" opacity="0.9"/>
+              <path d="M2 17l10 5 10-5" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>
+              <path d="M2 12l10 5 10-5" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <h1 class="welcome-title">LookMyClass API</h1>
+          <p class="welcome-version">v1.0.0</p>
+        </div>
+        <p class="welcome-description">
+          LookMyClass is an EdTech SaaS platform for creating and managing academic curricula,
+          AI-powered tests, documents, and subscriptions.
+        </p>
+
+        <div class="welcome-stats" id="welcomeStats">
+          <!-- filled by JS -->
+        </div>
+
+        <div class="welcome-info-grid">
+          <div class="info-card">
+            <div class="info-card-icon" style="background: #ede9fe; color: #7c3aed;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <div class="info-card-title">Authentication</div>
+              <div class="info-card-text">Protected endpoints require a Bearer JWT token in the <code>Authorization</code> header.</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon" style="background: #dcfce7; color: #16a34a;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div class="info-card-title">Base URL</div>
+              <div class="info-card-text"><code>https://api.lookmyclass.com</code></div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon" style="background: #fef3c7; color: #d97706;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div>
+              <div class="info-card-title">Content Type</div>
+              <div class="info-card-text">All requests use <code>application/json</code> unless otherwise noted.</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-icon" style="background: #dbeafe; color: #1d4ed8;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <div class="info-card-title">Rate Limiting</div>
+              <div class="info-card-text">API requests are rate-limited per user. Check response headers for current limits.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="welcome-methods">
+          <h2 class="welcome-section-title">HTTP Methods</h2>
+          <div class="methods-grid">
+            <div class="method-item"><span class="method-badge method-get">GET</span> Retrieve resources</div>
+            <div class="method-item"><span class="method-badge method-post">POST</span> Create resources</div>
+            <div class="method-item"><span class="method-badge method-patch">PATCH</span> Update resources</div>
+            <div class="method-item"><span class="method-badge method-delete">DELETE</span> Remove resources</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Endpoint Sections Container -->
+      <div id="endpointSections"></div>
+
+      <!-- Search Results (shown during search) -->
+      <div id="searchResults" class="search-results-container" style="display:none;"></div>
+
+    </main>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
